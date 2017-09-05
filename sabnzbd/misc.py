@@ -1451,15 +1451,13 @@ def get_all_passwords(nzo):
 
     meta_passwords = nzo.meta.get('password', [])
     pw = nzo.nzo_info.get('password')
-    if pw:
-        meta_passwords.append(pw)
+    if pw and not pw in passwords:
+        passwords.append(pw)
 
     if meta_passwords:
-        if nzo.password == meta_passwords[0]:
-            # this nzo.password came from meta, so don't use it twice
-            passwords.extend(meta_passwords[1:])
-        else:
-            passwords.extend(meta_passwords)
+        for mpw in meta_passwords:
+            if not mpw in passwords:
+                passwords.append(mpw)
         logging.info('Read %s passwords from meta data in NZB: %s', len(meta_passwords), meta_passwords)
 
     pw_file = cfg.password_file.get_path()
@@ -1470,7 +1468,9 @@ def get_all_passwords(nzo):
             # Remove empty lines and space-only passwords and remove surrounding spaces
             pws = [pw.strip('\r\n ') for pw in lines if pw.strip('\r\n ')]
             logging.debug('Read these passwords from file: %s', pws)
-            passwords.extend(pws)
+            for fpw in pws:
+                if not fpw in passwords:
+                    passwords.append(fpw)
             logging.info('Read %s passwords from file %s', len(pws), pw_file)
 
             # Check size
