@@ -2001,14 +2001,6 @@ def scan_password(name):
         braces = len(name)
     slash = name.find('/')
 
-    # Look for name/password, but make sure that '/' comes before any {{
-    if slash >= 0 and slash < braces and 'password=' not in name:
-        # Is it maybe in 'name / password' notation?
-        if slash == name.find(' / ') + 1:
-            # Remove the extra space after name and before password
-            return name[:slash - 1].strip('. '), name[slash + 2:]
-        return name[:slash].strip('. '), name[slash + 1:]
-
     # Look for "name password=password"
     pw = name.find('password=')
     if pw >= 0:
