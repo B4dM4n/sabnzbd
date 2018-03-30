@@ -1479,6 +1479,11 @@ def get_all_passwords(nzo):
         except:
             logging.warning('Failed to read the passwords file %s', pw_file)
 
+    for pw in passwords:
+        pw = pw.replace('_', '~')
+        if not pw in passwords:
+            passwords.append(pw)
+
     if nzo.password:
         # If an explicit password was set, add a retry without password, just in case.
         passwords.append('')
